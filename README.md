@@ -2,9 +2,11 @@
 
 Aplicação web Laravel para upload e votação de imagens.
 
-<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/40640751-1626-4cad-8222-38f9da01ba59" />
-<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/e94b49e9-6905-4ab1-9a3b-022d50ba470a" />
-<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/b01584d2-779e-460e-b676-ad60b6023970" />
+<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/c7711526-0ced-4f0c-abcb-b3fccb3f7cdd" />  
+<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/08a23332-8888-42b8-b5f5-6249eecb1755" />
+<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/12d8a263-f885-48fa-a126-015467df545b" />
+<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/39ff22cc-d1f8-4ee9-bf40-e79f9ff4afa1" />
+<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/c393c6c3-db26-4f31-b247-30ef1713c4a3" />
 
 
 ## Características
