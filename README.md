@@ -2,12 +2,45 @@
 
 Aplicação web Laravel para upload e votação de imagens.
 
-<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/c7711526-0ced-4f0c-abcb-b3fccb3f7cdd" />  
-<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/08a23332-8888-42b8-b5f5-6249eecb1755" />
-<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/12d8a263-f885-48fa-a126-015467df545b" />
-<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/39ff22cc-d1f8-4ee9-bf40-e79f9ff4afa1" />
-<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/c393c6c3-db26-4f31-b247-30ef1713c4a3" />
-<img width="1366" height="720" alt="imagem" src="https://github.com/user-attachments/assets/2ac774ed-5240-47ae-9247-db289e7039bf" />
+<details>
+<summary>📸 <strong>Ver Screenshots</strong> (clique para expandir)</summary>
+
+<br>
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/c7711526-0ced-4f0c-abcb-b3fccb3f7cdd" alt="Galeria Pública" />
+      <p align="center"><em>Upload de Imagens</em></p>
+    </td>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/08a23332-8888-42b8-b5f5-6249eecb1755" alt="Login Admin" />
+      <p align="center"><em>Imagens carregadas no painel de Admin</em></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/12d8a263-f885-48fa-a126-015467df545b" alt="Dashboard Admin" />
+      <p align="center"><em>Votos da Imagem</em></p>
+    </td>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/39ff22cc-d1f8-4ee9-bf40-e79f9ff4afa1" alt="Estatísticas" />
+      <p align="center"><em>Estatísticas</em></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/c393c6c3-db26-4f31-b247-30ef1713c4a3" alt="Gestão de Imagens" />
+      <p align="center"><em>Visualizar imagens</em></p>
+    </td>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/2ac774ed-5240-47ae-9247-db289e7039bf" alt="Visualizar Votos" />
+      <p align="center"><em>Confirmação do voto com email</em></p>
+    </td>
+  </tr>
+</table>
+
+</details>
 
 
 ## Características
