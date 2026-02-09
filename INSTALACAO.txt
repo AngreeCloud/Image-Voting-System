@@ -1,0 +1,195 @@
+==============================================
+  GUIA RÁPIDO DE INSTALAÇÃO
+  Sistema de Votação de Imagens - Laravel
+==============================================
+
+OPÇÃO 1: Instalação Automática (Recomendado)
+---------------------------------------------
+Execute o script de instalação:
+
+    .\install.ps1
+
+
+OPÇÃO 2: Instalação Manual
+---------------------------
+
+1. Instalar dependências do Composer:
+   
+   composer install
+
+
+2. Copiar ficheiro de configuração:
+   
+   copy .env.example .env
+
+
+3. Configurar base de dados no .env:
+   
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=laravel_voting
+   DB_USERNAME=root
+   DB_PASSWORD=<sua_password>
+
+
+4. Criar base de dados MySQL:
+   
+   CREATE DATABASE laravel_voting CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
+5. Gerar chave da aplicação:
+   
+   php artisan key:generate
+
+
+6. Criar diretório de uploads:
+   
+   mkdir public\uploads
+
+
+7. Executar migrations:
+   
+   php artisan migrate
+
+
+8. Criar utilizador admin:
+   
+   php artisan db:seed --class=AdminSeeder
+
+
+9. Iniciar servidor:
+   
+   php artisan serve
+
+
+10. Aceder à aplicação:
+    
+    http://localhost:8000
+
+
+==============================================
+CREDENCIAIS DO ADMIN
+==============================================
+
+Email:    admin@example.com
+Password: password
+
+
+==============================================
+ESTRUTURA DO PROJETO
+==============================================
+
+ROTAS PÚBLICAS:
+  GET  /              - Galeria de imagens (votação)
+  POST /vote          - Submeter voto
+
+ROTAS ADMIN (requer login):
+  GET  /admin/login        - Página de login
+  POST /admin/login        - Processar login
+  POST /admin/logout       - Logout
+  GET  /admin/dashboard    - Upload de imagens
+  POST /admin/upload       - Processar upload
+  GET  /admin/statistics   - Ver estatísticas
+
+
+==============================================
+BASE DE DADOS
+==============================================
+
+TABELAS:
+  - users          Admin users
+  - images         Imagens carregadas
+  - votes          Votos (email único)
+  - sessions       Sessões
+  - cache          Cache
+  - jobs           Trabalhos em fila
+
+
+RELACIONAMENTOS:
+  - images.user_id → users.id (admin que fez upload)
+  - votes.image_id → images.id (imagem votada)
+  - votes.email é ÚNICO (apenas 1 voto por email)
+
+
+==============================================
+RESOLUÇÃO DE PROBLEMAS
+==============================================
+
+1. Erro de conexão com MySQL:
+   - Verifique se MySQL está a correr
+   - Confirme credenciais no .env
+   - Verifique se a base de dados foi criada
+
+2. Erro "Class not found":
+   - Execute: composer dump-autoload
+
+3. Erro de permissões:
+   - Dê permissões à pasta storage:
+     icacls storage /grant Users:F /T
+     icacls bootstrap\cache /grant Users:F /T
+
+4. Página em branco:
+   - Verifique APP_DEBUG=true no .env
+   - Veja logs em storage/logs/laravel.log
+
+5. Upload não funciona:
+   - Verifique se public/uploads existe
+   - Dê permissões de escrita à pasta
+
+
+==============================================
+FUNCIONALIDADES
+==============================================
+
+ADMIN:
+  ✓ Login seguro
+  ✓ Upload de imagens (JPEG, PNG, JPG, GIF, WEBP)
+  ✓ Visualização de estatísticas
+  ✓ Total de votos por imagem
+  ✓ Percentagem de votos
+  ✓ Imagem mais votada
+
+VISITANTES:
+  ✓ Ver todas as imagens
+  ✓ Votar numa imagem
+  ✓ Um voto por email
+  ✓ Validação de email
+  ✓ Ver total de votos por imagem
+
+
+==============================================
+TECNOLOGIAS UTILIZADAS
+==============================================
+
+Backend:
+  - Laravel 11
+  - PHP 8.2+
+  - MySQL
+
+Frontend:
+  - Blade Templates
+  - Bootstrap 5
+  - Font Awesome
+  - JavaScript (Vanilla)
+
+
+==============================================
+SEGURANÇA
+==============================================
+
+✓ Middleware auth protege rotas admin
+✓ CSRF protection em todos os formulários
+✓ Validação de email no backend
+✓ Hash de passwords com bcrypt
+✓ Foreign keys para integridade referencial
+✓ Email único na tabela votes
+✓ Validação de tipos de ficheiro no upload
+
+
+==============================================
+SUPORTE
+==============================================
+
+Para mais informações, consulte o README.md
+

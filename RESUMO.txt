@@ -1,0 +1,352 @@
+==============================================
+  🎨 SISTEMA DE VOTAÇÃO DE IMAGENS
+  Aplicação Laravel Completa
+==============================================
+
+┌─────────────────────────────────────────────┐
+│           CARACTERÍSTICAS                   │
+└─────────────────────────────────────────────┘
+
+✨ Funcionalidades Principais:
+   • Upload de imagens por admins
+   • Sistema de votação público
+   • Estatísticas em tempo real
+   • Design responsivo (Bootstrap 5)
+   • Validação completa de dados
+
+🔐 Segurança:
+   • Autenticação admin
+   • Proteção CSRF
+   • Email único por voto
+   • Validação de ficheiros
+   • Foreign keys na BD
+
+
+┌─────────────────────────────────────────────┐
+│           TECNOLOGIAS                       │
+└─────────────────────────────────────────────┘
+
+Backend:
+   🐘 PHP 8.2+
+   🎯 Laravel 11
+   🗄️  MySQL
+
+Frontend:
+   📄 Blade Templates
+   🎨 Bootstrap 5
+   ✨ JavaScript Vanilla
+   🎭 Font Awesome
+
+
+┌─────────────────────────────────────────────┐
+│           PÁGINAS DA APLICAÇÃO              │
+└─────────────────────────────────────────────┘
+
+📱 PÁGINAS PÚBLICAS:
+   
+   🏠 Página Principal (/)
+      ├─ Galeria de imagens em grid
+      ├─ Contador de votos por imagem
+      ├─ Modal de votação
+      └─ Formulário de email
+
+📱 PÁGINAS ADMIN:
+   
+   🔑 Login (/admin/login)
+      ├─ Formulário de autenticação
+      ├─ Opção "lembrar-me"
+      └─ Validação de credenciais
+   
+   📤 Dashboard (/admin/dashboard)
+      ├─ Formulário de upload
+      ├─ Preview de imagem
+      ├─ Validação de formato
+      └─ Confirmação de sucesso
+   
+   📊 Estatísticas (/admin/statistics)
+      ├─ Resumo geral
+      ├─ Tabela detalhada
+      ├─ Gráficos de percentagem
+      └─ Imagem mais votada
+
+
+┌─────────────────────────────────────────────┐
+│           BASE DE DADOS                     │
+└─────────────────────────────────────────────┘
+
+📊 Estrutura:
+
+users (Admins)
+   ├─ id
+   ├─ name
+   ├─ email ← único
+   ├─ password ← hashed
+   └─ timestamps
+
+images (Imagens)
+   ├─ id
+   ├─ filename
+   ├─ path
+   ├─ user_id → users.id
+   └─ timestamps
+
+votes (Votos)
+   ├─ id
+   ├─ email ← único (1 voto/email)
+   ├─ image_id → images.id
+   └─ timestamps
+
+
+┌─────────────────────────────────────────────┐
+│           FLUXO DE UTILIZAÇÃO               │
+└─────────────────────────────────────────────┘
+
+👤 VISITANTE:
+   1. Acessa a galeria
+   2. Navega pelas imagens
+   3. Clica para votar
+   4. Insere email
+   5. Voto registado ✓
+
+👨‍💼 ADMIN:
+   1. Faz login
+   2. Acessa dashboard
+   3. Seleciona imagem
+   4. Faz upload
+   5. Vê estatísticas
+
+
+┌─────────────────────────────────────────────┐
+│           INSTALAÇÃO RÁPIDA                 │
+└─────────────────────────────────────────────┘
+
+🚀 Método Automático:
+   .\install.ps1
+
+🛠️ Método Manual:
+   1. composer install
+   2. copy .env.example .env
+   3. Configurar MySQL no .env
+   4. php artisan key:generate
+   5. php artisan migrate
+   6. php artisan db:seed --class=AdminSeeder
+   7. php artisan serve
+
+
+┌─────────────────────────────────────────────┐
+│           CREDENCIAIS PADRÃO                │
+└─────────────────────────────────────────────┘
+
+👤 Admin:
+   📧 Email:    admin@example.com
+   🔑 Password: password
+
+
+┌─────────────────────────────────────────────┐
+│           COMANDOS PRINCIPAIS               │
+└─────────────────────────────────────────────┘
+
+🖥️  Servidor:
+   php artisan serve
+
+🗄️  Base de Dados:
+   php artisan migrate
+   php artisan db:seed
+
+🧹 Limpar Cache:
+   php artisan optimize:clear
+
+📋 Ver Rotas:
+   php artisan route:list
+
+
+┌─────────────────────────────────────────────┐
+│           ESTRUTURA DE PASTAS               │
+└─────────────────────────────────────────────┘
+
+📁 Projeto/
+   ├─ 📂 app/
+   │  ├─ 📂 Http/
+   │  │  ├─ 📂 Controllers/
+   │  │  │  ├─ 📄 AdminController.php
+   │  │  │  ├─ 📄 ImageController.php
+   │  │  │  └─ 📄 VoteController.php
+   │  │  └─ 📂 Middleware/
+   │  └─ 📂 Models/
+   │     ├─ 📄 User.php
+   │     ├─ 📄 Image.php
+   │     └─ 📄 Vote.php
+   │
+   ├─ 📂 database/
+   │  ├─ 📂 migrations/
+   │  └─ 📂 seeders/
+   │
+   ├─ 📂 public/
+   │  └─ 📂 uploads/ ← Imagens aqui
+   │
+   ├─ 📂 resources/
+   │  └─ 📂 views/
+   │     ├─ 📂 layouts/
+   │     ├─ 📂 admin/
+   │     └─ 📄 gallery.blade.php
+   │
+   ├─ 📂 routes/
+   │  └─ 📄 web.php
+   │
+   └─ 📄 .env
+
+
+┌─────────────────────────────────────────────┐
+│           VALIDAÇÕES IMPLEMENTADAS          │
+└─────────────────────────────────────────────┘
+
+✅ Upload de Imagens:
+   • Formato: JPEG, PNG, JPG, GIF, WEBP
+   • Tamanho máximo: 10MB
+   • Validação de MIME type
+
+✅ Votação:
+   • Email válido
+   • Email único (1 voto/email)
+   • Imagem existe
+   • Proteção contra concorrência
+
+✅ Login:
+   • Email válido
+   • Password obrigatória
+   • Proteção CSRF
+
+
+┌─────────────────────────────────────────────┐
+│           RECURSOS VISUAIS                  │
+└─────────────────────────────────────────────┘
+
+🎨 Design:
+   • Layout responsivo (mobile-first)
+   • Gradientes modernos
+   • Animações suaves
+   • Cards elegantes
+   • Modais interativos
+
+🌈 Cores:
+   • Primária: Gradiente roxo (#667eea → #764ba2)
+   • Sucesso: Verde Bootstrap
+   • Erro: Vermelho Bootstrap
+   • Info: Azul Bootstrap
+
+🖼️ Componentes:
+   • Navbar com links contextuais
+   • Cards de imagens com hover
+   • Modal de votação
+   • Alertas de feedback
+   • Tabelas responsivas
+   • Barras de progresso
+
+
+┌─────────────────────────────────────────────┐
+│           FICHEIROS DE AJUDA                │
+└─────────────────────────────────────────────┘
+
+📚 Documentação Disponível:
+
+   📄 README.md
+      ↳ Visão geral e instruções
+
+   📄 INSTALACAO.txt
+      ↳ Guia passo a passo
+
+   📄 COMANDOS.md
+      ↳ Comandos úteis do Laravel
+
+   📄 ESTRUTURA.md
+      ↳ Estrutura detalhada
+
+   📄 RESUMO.txt (este ficheiro)
+      ↳ Resumo visual
+
+   📜 install.ps1
+      ↳ Script de instalação automática
+
+
+┌─────────────────────────────────────────────┐
+│           PRÓXIMOS PASSOS                   │
+└─────────────────────────────────────────────┘
+
+1️⃣  Instalar dependências:
+   composer install
+
+2️⃣  Configurar .env:
+   Copiar .env.example e editar
+
+3️⃣  Criar base de dados:
+   CREATE DATABASE laravel_voting;
+
+4️⃣  Executar migrations:
+   php artisan migrate
+
+5️⃣  Criar admin:
+   php artisan db:seed --class=AdminSeeder
+
+6️⃣  Iniciar servidor:
+   php artisan serve
+
+7️⃣  Aceder:
+   http://localhost:8000
+
+
+┌─────────────────────────────────────────────┐
+│           SUPORTE                           │
+└─────────────────────────────────────────────┘
+
+❓ Problemas?
+   1. Consulte INSTALACAO.txt
+   2. Veja COMANDOS.md
+   3. Verifique logs em storage/logs/
+
+🐛 Debug:
+   • Ative APP_DEBUG=true no .env
+   • Veja erros no navegador
+   • Consulte laravel.log
+
+📖 Documentação:
+   • Laravel: laravel.com/docs
+   • Bootstrap: getbootstrap.com
+
+
+┌─────────────────────────────────────────────┐
+│           ESTATÍSTICAS DO PROJETO           │
+└─────────────────────────────────────────────┘
+
+📊 Métricas:
+
+   Controllers:     3
+   Models:          3
+   Views:           5
+   Migrations:      5
+   Seeders:         2
+   Middleware:      8
+   Rotas:           8
+
+
+┌─────────────────────────────────────────────┐
+│           CONCLUSÃO                         │
+└─────────────────────────────────────────────┘
+
+✨ Aplicação completa e funcional!
+
+Inclui:
+   ✓ Sistema de autenticação
+   ✓ Upload de imagens
+   ✓ Sistema de votação
+   ✓ Estatísticas detalhadas
+   ✓ Interface moderna
+   ✓ Validações completas
+   ✓ Documentação extensa
+
+Pronto para usar! 🚀
+
+
+==============================================
+           Desenvolvido com ❤️
+             Laravel 11 + PHP 8.2
+==============================================
