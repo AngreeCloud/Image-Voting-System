@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class ImageController extends Controller
@@ -14,8 +15,14 @@ class ImageController extends Controller
      */
     public function upload(Request $request)
     {
+        // Obter configurações (pode vir de um form ou settings)
+        $maxSize = $request->input('max_size', 10240); // KB, padrão 10MB
+        $allowedTypes = $request->input('allowed_types', 'jpeg,png,jpg,gif,webp');
+        
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240', // Max 10MB
+            'image' => "required|image|mimes:{$allowedTypes}|max:{$maxSize}",
+            'max_size' => 'nullable|integer|min:100|max:51200', // 100KB a 50MB
+            'allowed_types' => 'nullable|string',
         ]);
 
         if ($request->hasFile('image')) {
@@ -41,6 +48,55 @@ class ImageController extends Controller
         }
         
         return back()->with('error', 'Erro ao carregar imagem.');
+    }
+
+    /**
+     * Listar todas as imagens para gestão (apenas admin)
+     */
+    public function manage()
+    {
+        $images = Image::withCount('votes')
+            ->with('user')
+            ->latest()
+            ->get();
+        
+        return view('admin.manage', compact('images'));
+    }
+
+    /**
+     * Ver votos de uma imagem (apenas admin)
+     */
+    public function viewVotes($id)
+    {
+        $image = Image::with(['votes' => function($query) {
+            $query->latest();
+        }, 'user'])->findOrFail($id);
+        
+        return view('admin.votes', compact('image'));
+    }
+
+    /**
+     * Remover imagem (apenas admin)
+     */
+    public function delete($id)
+    {
+        $image = Image::findOrFail($id);
+        
+        // Verificar se o admin é o dono da imagem ou se é super admin
+        if ($image->user_id !== Auth::id()) {
+            return back()->with('error', 'Você não tem permissão para remover esta imagem.');
+        }
+        
+        // Remover ficheiro físico
+        $filePath = public_path($image->path);
+        if (File::exists($filePath)) {
+            File::delete($filePath);
+        }
+        
+        // Remover da base de dados (votos serão removidos automaticamente por cascade)
+        $image->delete();
+        
+        return back()->with('success', 'Imagem removida com sucesso!');
     }
 
     /**

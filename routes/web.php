@@ -11,30 +11,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// ROTA DE TESTE - REMOVER DEPOIS
-Route::get('/test-auth', function () {
-    $user = \App\Models\User::where('email', 'admin@example.com')->first();
-    if (!$user) {
-        return 'Utilizador não encontrado!';
-    }
-    
-    $passwordCheck = \Illuminate\Support\Facades\Hash::check('password', $user->password);
-    
-    $attemptResult = \Illuminate\Support\Facades\Auth::attempt([
-        'email' => 'admin@example.com',
-        'password' => 'password'
-    ]);
-    
-    return [
-        'user_exists' => $user ? 'SIM' : 'NÃO',
-        'user_email' => $user->email,
-        'password_hash_check' => $passwordCheck ? 'CORRETO' : 'ERRADO',
-        'auth_attempt' => $attemptResult ? 'SUCESSO' : 'FALHOU',
-        'auth_check_after' => \Illuminate\Support\Facades\Auth::check() ? 'AUTENTICADO' : 'NÃO AUTENTICADO',
-        'session_driver' => config('session.driver'),
-    ];
-});
-
 // Página principal - Galeria de imagens (público)
 Route::get('/', [VoteController::class, 'index'])->name('gallery');
 
@@ -66,6 +42,15 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     
     // Upload de imagem
     Route::post('/upload', [ImageController::class, 'upload'])->name('admin.upload');
+    
+    // Gestão de imagens
+    Route::get('/manage', [ImageController::class, 'manage'])->name('admin.manage');
+    
+    // Ver votos de uma imagem
+    Route::get('/images/{id}/votes', [ImageController::class, 'viewVotes'])->name('admin.images.votes');
+    
+    // Remover imagem
+    Route::delete('/images/{id}', [ImageController::class, 'delete'])->name('admin.images.delete');
     
     // Estatísticas
     Route::get('/statistics', [ImageController::class, 'statistics'])->name('admin.statistics');

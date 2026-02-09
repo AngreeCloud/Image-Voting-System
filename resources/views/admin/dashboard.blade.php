@@ -14,9 +14,14 @@
                         </h2>
                         <p class="text-muted mb-0">Bem-vindo, {{ Auth::user()->name }}!</p>
                     </div>
-                    <a href="{{ route('admin.statistics') }}" class="btn btn-outline-primary">
-                        <i class="fas fa-chart-bar"></i> Ver Estatísticas
-                    </a>
+                    <div>
+                        <a href="{{ route('admin.manage') }}" class="btn btn-outline-danger me-2">
+                            <i class="fas fa-trash"></i> Gerir Imagens
+                        </a>
+                        <a href="{{ route('admin.statistics') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-chart-bar"></i> Ver Estatísticas
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,6 +40,40 @@
                 <form action="{{ route('admin.upload') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
                     @csrf
                     
+                    <!-- Configurações de Upload -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="max_size" class="form-label fw-bold">
+                                <i class="fas fa-weight-hanging"></i> Tamanho Máximo (KB)
+                            </label>
+                            <select class="form-select" id="max_size" name="max_size">
+                                <option value="2048">2 MB (2048 KB)</option>
+                                <option value="5120">5 MB (5120 KB)</option>
+                                <option value="10240" selected>10 MB (10240 KB)</option>
+                                <option value="20480">20 MB (20480 KB)</option>
+                                <option value="51200">50 MB (51200 KB)</option>
+                            </select>
+                            <small class="text-muted">Tamanho máximo permitido para upload</small>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="allowed_types" class="form-label fw-bold">
+                                <i class="fas fa-file-image"></i> Tipos Permitidos
+                            </label>
+                            <select class="form-select" id="allowed_types" name="allowed_types">
+                                <option value="jpeg,jpg,png,gif,webp" selected>Todos (JPEG, PNG, GIF, WEBP)</option>
+                                <option value="jpeg,jpg,png">Apenas JPEG e PNG</option>
+                                <option value="jpeg,jpg">Apenas JPEG</option>
+                                <option value="png">Apenas PNG</option>
+                                <option value="gif">Apenas GIF</option>
+                                <option value="webp">Apenas WEBP</option>
+                            </select>
+                            <small class="text-muted">Formatos de imagem aceites</small>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
                     <div class="mb-4">
                         <label for="image" class="form-label fw-bold">
                             <i class="fas fa-image"></i> Selecionar Imagem
@@ -51,9 +90,9 @@
                         @error('image')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">
+                        <small class="text-muted" id="fileInfo">
                             <i class="fas fa-info-circle"></i> 
-                            Formatos aceites: JPEG, PNG, JPG, GIF, WEBP (máx. 10MB)
+                            Selecione um ficheiro conforme as restrições acima
                         </small>
                     </div>
 
@@ -97,14 +136,46 @@
 @section('scripts')
 <script>
     function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function() {
-            const preview = document.getElementById('preview');
-            const previewContainer = document.getElementById('imagePreview');
-            preview.src = reader.result;
-            previewContainer.classList.remove('d-none');
+        const file = event.target.files[0];
+        const fileInfo = document.getElementById('fileInfo');
+        
+        if (file) {
+            // Mostrar informações do ficheiro
+            const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+            const sizeKB = (file.size / 1024).toFixed(2);
+            const maxSizeKB = document.getElementById('max_size').value;
+            const maxSizeMB = (maxSizeKB / 1024).toFixed(2);
+            
+            let infoText = `<i class="fas fa-file-image"></i> ${file.name} - ${sizeMB} MB (${sizeKB} KB)`;
+            
+            if (file.size / 1024 > maxSizeKB) {
+                fileInfo.innerHTML = `<i class="fas fa-exclamation-triangle text-danger"></i> 
+                    <span class="text-danger">Ficheiro muito grande! Tamanho: ${sizeMB} MB, Máximo permitido: ${maxSizeMB} MB</span>`;
+                fileInfo.classList.add('text-danger');
+            } else {
+                fileInfo.innerHTML = `<i class="fas fa-check-circle text-success"></i> ${infoText}`;
+                fileInfo.classList.remove('text-danger');
+                fileInfo.classList.add('text-success');
+            }
+            
+            // Preview
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('preview');
+                const previewContainer = document.getElementById('imagePreview');
+                preview.src = reader.result;
+                previewContainer.classList.remove('d-none');
+            }
+            reader.readAsDataURL(file);
         }
-        reader.readAsDataURL(event.target.files[0]);
     }
+    
+    // Atualizar info quando alterar tamanho máximo
+    document.getElementById('max_size').addEventListener('change', function() {
+        const fileInput = document.getElementById('image');
+        if (fileInput.files.length > 0) {
+            previewImage({ target: fileInput });
+        }
+    });
 </script>
 @endsection

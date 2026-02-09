@@ -84,6 +84,7 @@
                                         <i class="fas fa-heart"></i> Votos
                                     </th>
                                     <th width="120" class="text-center">% Votos</th>
+                                    <th width="150" class="text-center">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -133,6 +134,15 @@
                                             @else
                                                 <span class="text-muted">0%</span>
                                             @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <a 
+                                                href="{{ route('admin.images.votes', $image->id) }}" 
+                                                class="btn btn-info btn-sm"
+                                                title="Ver emails dos votantes"
+                                            >
+                                                <i class="fas fa-eye"></i> Ver Votos
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

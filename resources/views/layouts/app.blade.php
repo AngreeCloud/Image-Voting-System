@@ -89,6 +89,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.manage') }}">
+                                <i class="fas fa-cog"></i> Gerir Imagens
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('admin.statistics') }}">
                                 <i class="fas fa-chart-bar"></i> Estatísticas
                             </a>
