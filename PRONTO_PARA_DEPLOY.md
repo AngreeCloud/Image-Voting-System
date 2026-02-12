@@ -1,5 +1,8 @@
 # ✅ PRONTO PARA COMMIT E DEPLOY
 
+> **🔧 FIX APLICADO:** Corrigido erro `--database option does not exist` no start.sh  
+> Agora usa verificação PDO nativa (compatível com Laravel 11)
+
 ## 🎯 O Que Foi Implementado
 
 ### Sistema Inteligente de Storage
@@ -23,6 +26,9 @@
 
 **Configuração:**
 - `.env.example` - Adicionado `IMGBB_API_KEY`
+
+**Docker/Deploy:**
+- `docker/start.sh` - **FIX:** Verificação de DB usando PDO ✅
 
 **Documentação:**
 - `IMGBB_SETUP.md` - Guia completo de uso ⭐ **LEIA ISTO!**
@@ -162,6 +168,7 @@ Antes do commit:
 - [x] API key no `.env` local ✅
 - [x] `.env.example` atualizado ✅
 - [x] Documentação completa ✅
+- [x] Fix do `start.sh` (db:monitor → PDO check) ✅
 
 Para deploy:
 - [ ] `git add . && git commit && git push` ⬅️ **FAÇA ISTO AGORA!**

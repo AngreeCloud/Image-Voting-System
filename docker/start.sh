@@ -5,10 +5,35 @@ echo "🚀 Iniciando aplicação Laravel..."
 
 # Esperar pela base de dados
 echo "⏳ Aguardando conexão com a base de dados..."
-until php artisan db:monitor --database=pgsql 2>/dev/null; do
-    echo "Base de dados não disponível ainda - aguardando..."
+max_attempts=30
+attempt=0
+
+until php -r "
+try {
+    \$pdo = new PDO(
+        'pgsql:host=' . getenv('DB_HOST') . ';port=' . getenv('DB_PORT') . ';dbname=' . getenv('DB_DATABASE'),
+        getenv('DB_USERNAME'),
+        getenv('DB_PASSWORD')
+    );
+    exit(0);
+} catch (PDOException \$e) {
+    exit(1);
+}
+" || [ $attempt -eq $max_attempts ]; do
+    attempt=$((attempt + 1))
+    echo "Base de dados não disponível ainda - tentativa $attempt/$max_attempts..."
     sleep 2
 done
+
+if [ $attempt -eq $max_attempts ]; then
+    echo "❌ Falha ao conectar à base de dados após $max_attempts tentativas"
+    echo "🔍 Verificando variáveis de ambiente:"
+    echo "DB_CONNECTION: $DB_CONNECTION"
+    echo "DB_HOST: $DB_HOST"
+    echo "DB_PORT: $DB_PORT"
+    echo "DB_DATABASE: $DB_DATABASE"
+    exit 1
+fi
 
 echo "✅ Base de dados conectada!"
 
