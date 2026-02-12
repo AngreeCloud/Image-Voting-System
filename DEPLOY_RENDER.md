@@ -85,10 +85,9 @@ Se preferir criar manualmente:
    - **Dockerfile Path**: `./Dockerfile`
    - **Docker Build Context**: `.`
 4. Plan: **Free**
-5. Adicionar **Disk**:
-   - Name: `uploads-disk`
-   - Mount Path: `/var/www/html/public/uploads`
-   - Size: `1 GB`
+
+⚠️ **Nota sobre Storage:** O free plan não tem persistent disk. Uploads serão temporários (perdidos em deploys).  
+**Alternativas gratuitas:** Cloudinary, AWS S3, ImgBB - ver [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)
 
 ## 🔐 Passo 3: Configurar Variáveis de Ambiente
 
@@ -271,11 +270,16 @@ Dashboard → Web Service → Manual Deploy → Deploy Latest Commit
 3. Atualizar variáveis `DB_*` no Web Service
 4. Fazer redeploy
 
-### Uploads não funcionam
+### Uploads não funcionam / Uploads desaparecem
 
-1. Verificar que Disk está montado em `/var/www/html/public/uploads`
-2. Verificar permissões no `start.sh`
-3. Verificar logs para erros de escrita
+**Free Plan:** Uploads são temporários (storage efémero). Cada deploy ou restart apaga os ficheiros.
+
+**Soluções:**
+1. **Cloudinary** (recomendado) - 25GB grátis, CDN, otimização
+2. **AWS S3** - 5GB grátis por 12 meses
+3. **ImgBB** - Uploads ilimitados, simples
+
+Ver guia completo: [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)
 
 ### Aplicação lenta no Free Plan
 
@@ -291,17 +295,23 @@ Upgrade para **Starter Plan** ($7/mês) resolve isso.
 ### Free Plan (Atual):
 - ✅ Web Service: Grátis
 - ✅ PostgreSQL: Grátis (1GB)
-- ✅ Disk: Grátis (1GB)
+- ❌ Disk: **Não disponível no free plan**
 - ⚠️ Limitações:
   - Suspende após 15 min inativo
   - 750 horas/mês (suficiente para um serviço)
   - CPU e RAM compartilhadas
+  - **Storage efémero** (uploads perdidos em deploys)
+
+**Soluções para storage:**
+- **Grátis:** Cloudinary (25GB), AWS S3 (5GB), ImgBB - [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)
+- **Pago:** Starter Plan ($7/mês) com persistent disk
 
 ### Starter Plan ($7/mês):
 - ✅ Sem suspensão
 - ✅ CPU e RAM dedicadas
+- ✅ Persistent disk (1GB incluído)
 - ✅ Mais recursos
-- Recomendado para produção
+- Recomendado para produção com uploads frequentes
 
 ## 📚 Recursos Adicionais
 

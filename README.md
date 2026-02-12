@@ -50,6 +50,25 @@ Aplicação web Laravel para upload e votação de imagens.
 - Sistema de votação com validação de email único
 - Armazenamento local de imagens
 
+## Deploy para Produção
+
+### Render.com (Recomendado)
+Deploy automatizado com Docker + PostgreSQL:
+- ⚡ **Quick Start:** [DEPLOY_QUICK.md](DEPLOY_QUICK.md) (5 minutos)
+- 📘 **Guia Completo:** [DEPLOY_RENDER.md](DEPLOY_RENDER.md)
+- 📦 **Arquivos:** [ARQUIVOS_DEPLOY.md](ARQUIVOS_DEPLOY.md)
+
+### ⚠️ Storage de Uploads
+O free plan da Render **não tem persistent disk**. Uploads são temporários (perdidos em deploys).
+
+**Soluções:**
+- **Cloudinary** (recomendado) - 25GB grátis + CDN + otimização
+- **AWS S3** - 5GB grátis por 12 meses
+- **ImgBB** - Uploads ilimitados, setup simples
+- **Aceitar limitação** - para testes apenas
+
+📖 **Guia completo:** [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)
+
 ## Requisitos
 
 - PHP >= 8.1
@@ -178,6 +197,24 @@ Acesse: `http://localhost:8000`
 ## Tecnologias
 
 - Laravel 11
-- MySQL
-- Bootstrap 5 (opcional)
+- MySQL / PostgreSQL (produção)
+- Bootstrap 5
 - Blade templates
+- Docker + NGINX + PHP-FPM
+
+## 📚 Documentação Completa
+
+### Deploy e Infraestrutura
+- **[DEPLOY_QUICK.md](DEPLOY_QUICK.md)** - Deploy rápido para Render (5 min)
+- **[DEPLOY_RENDER.md](DEPLOY_RENDER.md)** - Guia completo de deploy
+- **[ARQUIVOS_DEPLOY.md](ARQUIVOS_DEPLOY.md)** - Documentação técnica dos arquivos Docker
+- **[STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)** - Soluções para storage de uploads (Cloudinary, S3, ImgBB)
+
+### Funcionalidades
+- **[HIERARQUIA.md](HIERARQUIA.md)** - Sistema Owner/Admin com permissões
+- **[INSTALACAO_HIERARQUIA.md](INSTALACAO_HIERARQUIA.md)** - Setup do sistema hierárquico
+
+### Primeiros Passos
+1. **Local:** Siga as instruções de instalação abaixo
+2. **Produção:** Comece com [DEPLOY_QUICK.md](DEPLOY_QUICK.md)
+3. **Storage persistente:** Configure com [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)

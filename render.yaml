@@ -63,10 +63,9 @@ services:
         - public/**
         - composer.json
         - package.json
-    disk:
-      name: uploads-disk
-      mountPath: /var/www/html/public/uploads
-      sizeGB: 1
+    # NOTA: Persistent disk não disponível no free plan
+    # Uploads serão armazenados no filesystem temporário
+    # Alternativas: usar storage externo (Cloudinary, AWS S3)
 
   # PostgreSQL Database
 databases:

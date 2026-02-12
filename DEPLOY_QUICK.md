@@ -24,6 +24,8 @@ git push origin main
 - ⏱️ Primeiro deploy: ~5-10 minutos
 - 📊 Acompanhe em "Logs"
 
+⚠️ **Nota sobre Storage:** O free plan não tem persistent disk. Uploads serão temporários (perdidos em deploys). Ver alternativas em [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)
+
 ## Passo 4: Acessar Aplicação
 
 - 🌐 URL: `https://seu-app.onrender.com`
