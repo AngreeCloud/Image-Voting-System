@@ -33,15 +33,20 @@ class ImageController extends Controller
             // Decidir onde fazer upload baseado no ambiente
             if ($this->shouldUseExternalStorage()) {
                 // Produção: Usar ImgBB (storage externo)
-                $imageUrl = $this->uploadToImgBB($file);
-                
-                Image::create([
-                    'filename' => $filename,
-                    'path' => $imageUrl, // URL completa do ImgBB
-                    'user_id' => Auth::id(),
-                ]);
-                
-                return back()->with('success', 'Imagem carregada com sucesso no ImgBB!');
+                try {
+                    $imageUrl = $this->uploadToImgBB($file);
+                    
+                    Image::create([
+                        'filename' => $filename,
+                        'path' => $imageUrl, // URL completa do ImgBB
+                        'user_id' => Auth::id(),
+                    ]);
+                    
+                    return back()->with('success', 'Imagem carregada com sucesso no ImgBB!');
+                    
+                } catch (\Exception $e) {
+                    return back()->with('error', 'Erro ao carregar: ' . $e->getMessage());
+                }
             } else {
                 // Desenvolvimento: Usar storage local
                 $uniqueFilename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
@@ -80,29 +85,42 @@ class ImageController extends Controller
             throw new \Exception('IMGBB_API_KEY não configurada');
         }
 
-        $response = Http::asMultipart()->post('https://api.imgbb.com/1/upload', [
-            [
-                'name' => 'key',
-                'contents' => $apiKey
-            ],
-            [
-                'name' => 'image',
-                'contents' => fopen($file->getRealPath(), 'r'),
-                'filename' => $file->getClientOriginalName()
-            ]
-        ]);
+        try {
+            $response = Http::timeout(120) // 2 minutos para arquivos grandes
+                ->retry(2, 1000) // 2 tentativas com 1s de intervalo
+                ->asMultipart()
+                ->post('https://api.imgbb.com/1/upload', [
+                    [
+                        'name' => 'key',
+                        'contents' => $apiKey
+                    ],
+                    [
+                        'name' => 'image',
+                        'contents' => fopen($file->getRealPath(), 'r'),
+                        'filename' => $file->getClientOriginalName()
+                    ]
+                ]);
 
-        if (!$response->successful()) {
-            throw new \Exception('Erro ao fazer upload para ImgBB: ' . $response->body());
+            if (!$response->successful()) {
+                $errorMsg = $response->json()['error']['message'] ?? $response->body();
+                throw new \Exception('ImgBB recusou: ' . $errorMsg);
+            }
+
+            $data = $response->json();
+            
+            if (!isset($data['data']['url'])) {
+                throw new \Exception('Resposta inválida do ImgBB');
+            }
+
+            return $data['data']['url'];
+            
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            // Timeout ou problema de conexão
+            throw new \Exception('Timeout ao enviar para ImgBB. Arquivo muito grande ou conexão lenta. Tente arquivo menor.');
+        } catch (\Exception $e) {
+            // Outros erros
+            throw $e;
         }
-
-        $data = $response->json();
-        
-        if (!isset($data['data']['url'])) {
-            throw new \Exception('Resposta inválida do ImgBB');
-        }
-
-        return $data['data']['url'];
     }
 
     /**
