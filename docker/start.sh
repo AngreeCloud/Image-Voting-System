@@ -37,6 +37,15 @@ fi
 
 echo "✅ Base de dados conectada!"
 
+# Gerar APP_KEY se não existir
+if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "base64:" ]; then
+    echo "🔑 Gerando APP_KEY..."
+    php artisan key:generate --force
+    echo "✅ APP_KEY gerada automaticamente!"
+else
+    echo "✅ APP_KEY já configurada"
+fi
+
 # Limpar caches
 echo "🧹 Limpando caches..."
 php artisan config:clear
