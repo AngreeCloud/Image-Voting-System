@@ -4,6 +4,37 @@ Este documento explica como fazer deploy da aplicação em um servidor de produ�
 
 ---
 
+## 🚀 Deploy Rápido no Render (Recomendado)
+
+**A forma mais fácil de fazer deploy - totalmente automatizado com Docker!**
+
+### Vantagens:
+- ✅ Deploy em menos de 10 minutos
+- ✅ PostgreSQL gratuita incluída
+- ✅ 1GB storage para uploads
+- ✅ SSL/HTTPS automático
+- ✅ Auto-deploy do GitHub
+- ✅ Zero configuração de servidor
+
+### Guias:
+- **[DEPLOY_QUICK.md](DEPLOY_QUICK.md)** - Deploy em 3 passos (5 minutos)
+- **[DEPLOY_RENDER.md](DEPLOY_RENDER.md)** - Documentação completa
+
+### Passos Resumidos:
+```bash
+# 1. Push para GitHub
+git push origin main
+
+# 2. Criar Blueprint no Render
+# Acesse render.com → New + → Blueprint → Conectar repositório
+
+# 3. Aguardar deploy (~5-10 min)
+```
+
+**Pronto!** Aplicação online em `https://seu-app.onrender.com`
+
+---
+
 ## ⚠️ Checklist Pré-Deploy
 
 Antes de fazer deploy, certifique-se de:
@@ -19,7 +50,32 @@ Antes de fazer deploy, certifique-se de:
 
 ## 🖥️ Opções de Hosting
 
-### 1. Shared Hosting (cPanel)
+### 1. Render (Recomendado) 🌟
+
+**Deploy automatizado com Docker**
+
+**Plano Free Inclui:**
+- Web Service (grátis)
+- PostgreSQL Database (1GB)
+- Persistent Disk (1GB)
+- SSL automático
+- Auto-deploy GitHub
+
+**Prós:**
+- ✅ Setup mais fácil (3 passos)
+- ✅ Infraestrutura como código (render.yaml)
+- ✅ Zero manutenção de servidor
+- ✅ Escalável (upgrade fácil)
+
+**Contras:**
+- ⚠️ Suspende após 15 min inativo (free plan)
+- ⚠️ Cold start ~30-60s
+
+**Documentação:** [DEPLOY_RENDER.md](DEPLOY_RENDER.md)
+
+---
+
+### 2. Shared Hosting (cPanel)
 
 **Requisitos:**
 - PHP 8.2+
@@ -33,7 +89,7 @@ Antes de fazer deploy, certifique-se de:
 - SiteGround
 - Bluehost
 
-### 2. VPS (Virtual Private Server)
+### 3. VPS (Virtual Private Server)
 
 **Provedores:**
 - DigitalOcean
@@ -41,11 +97,11 @@ Antes de fazer deploy, certifique-se de:
 - Vultr
 - AWS Lightsail
 
-### 3. Cloud Platforms
+### 4. Cloud Platforms
 
 **Plataformas Laravel-Friendly:**
 - Laravel Forge + DigitalOcean
-- Heroku
+- Heroku (com buildpack PHP)
 - AWS Elastic Beanstalk
 - Google Cloud Platform
 

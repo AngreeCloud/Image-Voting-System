@@ -1,0 +1,77 @@
+services:
+  # Web Service - Aplicação Laravel
+  - type: web
+    name: laravel-voting-app
+    runtime: docker
+    region: frankfurt # ou oregon, singapore
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: APP_NAME
+        value: "Laravel Voting System"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        fromService:
+          type: web
+          name: laravel-voting-app
+          property: host
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: error
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: laravel-voting-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: laravel-voting-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: laravel-voting-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: laravel-voting-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: laravel-voting-db
+          property: password
+      - key: CACHE_DRIVER
+        value: database
+      - key: SESSION_DRIVER
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: APP_KEY
+        generateValue: true
+    buildFilter:
+      paths:
+        - app/**
+        - resources/**
+        - routes/**
+        - database/**
+        - public/**
+        - composer.json
+        - package.json
+    disk:
+      name: uploads-disk
+      mountPath: /var/www/html/public/uploads
+      sizeGB: 1
+
+  # PostgreSQL Database
+databases:
+  - name: laravel-voting-db
+    databaseName: voting_db
+    user: voting_user
+    plan: free
+    region: frankfurt # mesma região do web service
