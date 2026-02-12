@@ -34,12 +34,30 @@ class VoteController extends Controller
 
         $email = $request->email;
         $imageId = $request->image_id;
+        $confirmRemove = $request->boolean('confirm_remove');
 
         // Verificar se o email já votou
         $existingVote = Vote::where('email', $email)->first();
 
         if ($existingVote) {
-            return back()->with('error', 'Este email já votou. Cada email só pode votar uma vez!');
+            // Se o utilizador confirmou a remoção do voto
+            if ($confirmRemove) {
+                // Remover o voto anterior
+                $existingVote->delete();
+                
+                return back()->with([
+                    'success' => 'Voto removido com sucesso! O email ' . $email . ' tem agora um voto livre.',
+                    'vote_removed' => true,
+                    'email' => $email,
+                ]);
+            }
+            
+            // Perguntar se quer remover o voto existente
+            return back()->with([
+                'ask_remove' => true,
+                'existing_email' => $email,
+                'new_image_id' => $imageId,
+            ]);
         }
 
         // Verificar se a imagem existe

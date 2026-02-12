@@ -95,6 +95,49 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de Confirmação de Remoção -->
+<div class="modal fade" id="removeVoteModal" tabindex="-1" aria-labelledby="removeVoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="removeVoteModalLabel">
+                    <i class="fas fa-exclamation-triangle"></i> Voto Existente Detectado
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('vote') }}" method="POST">
+                @csrf
+                <input type="hidden" name="confirm_remove" value="1">
+                <input type="hidden" name="email" id="removeEmail" value="{{ session('existing_email') }}">
+                <input type="hidden" name="image_id" value="{{ session('new_image_id') }}">
+                
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>O email <span class="text-primary">{{ session('existing_email') }}</span> já votou anteriormente.</strong>
+                    </div>
+                    
+                    <p class="mb-3">
+                        <i class="fas fa-question-circle"></i> <strong>Deseja remover o seu voto anterior?</strong>
+                    </p>
+                    
+                    <p class="text-muted mb-0">
+                        Após remover, você terá um voto livre e poderá votar novamente em qualquer imagem.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Não, Manter Voto
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Sim, Remover Voto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -102,5 +145,13 @@
     function selectImage(imageId) {
         document.getElementById('selectedImageId').value = imageId;
     }
+    
+    // Se houver pedido para confirmar remoção, mostrar modal
+    @if(session('ask_remove'))
+        document.addEventListener('DOMContentLoaded', function() {
+            var removeModal = new bootstrap.Modal(document.getElementById('removeVoteModal'));
+            removeModal.show();
+        });
+    @endif
 </script>
 @endsection
