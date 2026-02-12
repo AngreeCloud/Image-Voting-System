@@ -53,7 +53,9 @@ services:
       - key: QUEUE_CONNECTION
         value: database
       - key: APP_KEY
-        generateValue: true
+        value: base64:3qnN7P8EBIhjM+l8KDUUY1RFi5VfC3b0scqfgJdiXUw=
+      - key: IMGBB_API_KEY
+        value: e029e58eeece17b8d464c9685b19228d
     buildFilter:
       paths:
         - app/**
