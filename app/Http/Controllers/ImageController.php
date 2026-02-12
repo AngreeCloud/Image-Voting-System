@@ -6,6 +6,7 @@ use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class ImageController extends Controller
@@ -27,27 +28,81 @@ class ImageController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
+            $filename = $file->getClientOriginalName();
             
-            // Gerar nome único para o ficheiro
-            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-            
-            // Mover para pasta public/uploads
-            $file->move(public_path('uploads'), $filename);
-            
-            // Caminho relativo
-            $path = 'uploads/' . $filename;
-            
-            // Guardar na base de dados
-            Image::create([
-                'filename' => $filename,
-                'path' => $path,
-                'user_id' => Auth::id(),
-            ]);
-            
-            return back()->with('success', 'Imagem carregada com sucesso!');
+            // Decidir onde fazer upload baseado no ambiente
+            if ($this->shouldUseExternalStorage()) {
+                // Produção: Usar ImgBB (storage externo)
+                $imageUrl = $this->uploadToImgBB($file);
+                
+                Image::create([
+                    'filename' => $filename,
+                    'path' => $imageUrl, // URL completa do ImgBB
+                    'user_id' => Auth::id(),
+                ]);
+                
+                return back()->with('success', 'Imagem carregada com sucesso no ImgBB!');
+            } else {
+                // Desenvolvimento: Usar storage local
+                $uniqueFilename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads'), $uniqueFilename);
+                
+                Image::create([
+                    'filename' => $filename,
+                    'path' => 'uploads/' . $uniqueFilename, // Path local
+                    'user_id' => Auth::id(),
+                ]);
+                
+                return back()->with('success', 'Imagem carregada com sucesso (storage local)!');
+            }
         }
         
         return back()->with('error', 'Erro ao carregar imagem.');
+    }
+
+    /**
+     * Verificar se deve usar storage externo (ImgBB)
+     * Usa ImgBB se estiver em produção E tiver a API key configurada
+     */
+    private function shouldUseExternalStorage()
+    {
+        return config('app.env') === 'production' && !empty(config('services.imgbb.api_key'));
+    }
+
+    /**
+     * Fazer upload para ImgBB
+     */
+    private function uploadToImgBB($file)
+    {
+        $apiKey = config('services.imgbb.api_key');
+        
+        if (empty($apiKey)) {
+            throw new \Exception('IMGBB_API_KEY não configurada');
+        }
+
+        $response = Http::asMultipart()->post('https://api.imgbb.com/1/upload', [
+            [
+                'name' => 'key',
+                'contents' => $apiKey
+            ],
+            [
+                'name' => 'image',
+                'contents' => fopen($file->getRealPath(), 'r'),
+                'filename' => $file->getClientOriginalName()
+            ]
+        ]);
+
+        if (!$response->successful()) {
+            throw new \Exception('Erro ao fazer upload para ImgBB: ' . $response->body());
+        }
+
+        $data = $response->json();
+        
+        if (!isset($data['data']['url'])) {
+            throw new \Exception('Resposta inválida do ImgBB');
+        }
+
+        return $data['data']['url'];
     }
 
     /**
@@ -92,11 +147,14 @@ class ImageController extends Controller
             return back()->with('error', 'Você não tem permissão para remover esta imagem.');
         }
         
-        // Remover ficheiro físico
-        $filePath = public_path($image->path);
-        if (File::exists($filePath)) {
-            File::delete($filePath);
+        // Remover ficheiro físico APENAS se for storage local (não URL externa)
+        if (!str_starts_with($image->path, 'http://') && !str_starts_with($image->path, 'https://')) {
+            $filePath = public_path($image->path);
+            if (File::exists($filePath)) {
+                File::delete($filePath);
+            }
         }
+        // Se for URL externa (ImgBB, S3, etc), não fazemos nada - fica lá permanentemente
         
         // Remover da base de dados (votos serão removidos automaticamente por cascade)
         $image->delete();

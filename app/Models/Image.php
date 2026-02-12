@@ -43,4 +43,19 @@ class Image extends Model
     {
         return $this->votes()->count();
     }
+
+    /**
+     * Obter URL completa da imagem
+     * (funciona com URLs externas do ImgBB ou paths locais)
+     */
+    public function getImageUrl()
+    {
+        // Se o path começa com http:// ou https://, é uma URL completa (ImgBB, S3, etc)
+        if (str_starts_with($this->path, 'http://') || str_starts_with($this->path, 'https://')) {
+            return $this->path;
+        }
+        
+        // Caso contrário, é um path local - usar asset()
+        return asset($this->path);
+    }
 }

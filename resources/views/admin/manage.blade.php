@@ -28,7 +28,7 @@
         @foreach($images as $image)
             <div class="col-md-4 col-lg-3">
                 <div class="card h-100">
-                    <img src="{{ asset($image->path) }}" class="card-img-top" alt="{{ $image->filename }}" style="height: 200px; object-fit: cover;">
+                    <img src="{{ $image->getImageUrl() }}" class="card-img-top" alt="{{ $image->filename }}" style="height: 200px; object-fit: cover;">
                     <div class="card-body">
                         <h6 class="card-title text-truncate" title="{{ $image->filename }}">
                             {{ $image->filename }}

@@ -53,21 +53,18 @@ Aplicação web Laravel para upload e votação de imagens.
 ## Deploy para Produção
 
 ### Render.com (Recomendado)
-Deploy automatizado com Docker + PostgreSQL:
+Deploy automatizado com Docker + PostgreSQL + ImgBB:
 - ⚡ **Quick Start:** [DEPLOY_QUICK.md](DEPLOY_QUICK.md) (5 minutos)
 - 📘 **Guia Completo:** [DEPLOY_RENDER.md](DEPLOY_RENDER.md)
 - 📦 **Arquivos:** [ARQUIVOS_DEPLOY.md](ARQUIVOS_DEPLOY.md)
 
-### ⚠️ Storage de Uploads
-O free plan da Render **não tem persistent disk**. Uploads são temporários (perdidos em deploys).
+### ✅ Storage de Uploads (ImgBB Integrado)
+A aplicação usa **detecção automática de ambiente**:
+- **Desenvolvimento:** Storage local temporário
+- **Produção:** ImgBB (25GB grátis, permanente)
 
-**Soluções:**
-- **Cloudinary** (recomendado) - 25GB grátis + CDN + otimização
-- **AWS S3** - 5GB grátis por 12 meses
-- **ImgBB** - Uploads ilimitados, setup simples
-- **Aceitar limitação** - para testes apenas
-
-📖 **Guia completo:** [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)
+📖 **Setup:** [IMGBB_SETUP.md](IMGBB_SETUP.md) - já configurado, só adicionar API key no Render!
+📖 **Outras opções:** [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md) (Cloudinary, S3)
 
 ## Requisitos
 
@@ -213,8 +210,9 @@ Acesse: `http://localhost:8000`
 ### Funcionalidades
 - **[HIERARQUIA.md](HIERARQUIA.md)** - Sistema Owner/Admin com permissões
 - **[INSTALACAO_HIERARQUIA.md](INSTALACAO_HIERARQUIA.md)** - Setup do sistema hierárquico
+- **[IMGBB_SETUP.md](IMGBB_SETUP.md)** - Integração ImgBB para storage permanente
 
 ### Primeiros Passos
 1. **Local:** Siga as instruções de instalação abaixo
-2. **Produção:** Comece com [DEPLOY_QUICK.md](DEPLOY_QUICK.md)
-3. **Storage persistente:** Configure com [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)
+2. **Produção:** Comece com [DEPLOY_QUICK.md](DEPLOY_QUICK.md) + adicionar IMGBB_API_KEY
+3. **Outras opções de storage:** [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)

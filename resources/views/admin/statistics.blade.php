@@ -93,7 +93,7 @@
                                         <td class="fw-bold">{{ $index + 1 }}</td>
                                         <td>
                                             <img 
-                                                src="{{ asset($image->path) }}" 
+                                                src="{{ $image->getImageUrl() }}" 
                                                 alt="{{ $image->filename }}"
                                                 class="img-thumbnail"
                                                 style="width: 100px; height: 80px; object-fit: cover;"

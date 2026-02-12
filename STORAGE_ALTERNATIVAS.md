@@ -1,5 +1,9 @@
 # 💾 Armazenamento de Imagens no Free Plan
 
+> **✅ ImgBB JÁ ESTÁ IMPLEMENTADO!**  
+> Esta aplicação usa ImgBB automaticamente em produção. Ver [IMGBB_SETUP.md](IMGBB_SETUP.md) para detalhes.  
+> Este documento mostra **outras alternativas** caso queira trocar.
+
 ## ⚠️ Limitação do Render Free Plan
 
 O **Render Free Plan não suporta persistent disks**. Isso significa que uploads de imagens serão armazenados no filesystem temporário do container e **serão perdidos** quando:
@@ -105,44 +109,34 @@ public function upload(Request $request)
 
 ---
 
-### **Opção 3: ImgBB (Simples)**
+### **Opção 3: ImgBB (Simples)** ✅ JÁ IMPLEMENTADO
+
+> **Esta opção já está implementada na aplicação!**  
+> Ver [IMGBB_SETUP.md](IMGBB_SETUP.md) para instruções de uso.
 
 **Plano Gratuito:**
 - ✅ Storage ilimitado
 - ✅ Sem bandwidth limit
 - ✅ API simples
+- ✅ **Já implementado no código**
 - ⚠️ Max 32 MB por imagem
 
-**Setup:**
+**Como usar:**
 
-1. **API Key:** https://api.imgbb.com/
+A aplicação **detecta automaticamente** o ambiente:
+- **Desenvolvimento (`APP_ENV=local`):** Storage local
+- **Produção (`APP_ENV=production`):** ImgBB
 
-2. **Install Guzzle:**
-```bash
-composer require guzzlehttp/guzzle
+**Basta adicionar no Render:**
+```env
+IMGBB_API_KEY=sua_api_key_aqui
 ```
 
-3. **Helper no Controller:**
-```php
-use Illuminate\Support\Facades\Http;
+Ver guia completo em [IMGBB_SETUP.md](IMGBB_SETUP.md)
 
-private function uploadToImgBB($file)
-{
-    $response = Http::asMultipart()->post('https://api.imgbb.com/1/upload', [
-        [
-            'name' => 'key',
-            'contents' => env('IMGBB_API_KEY')
-        ],
-        [
-            'name' => 'image',
-            'contents' => fopen($file->getRealPath(), 'r'),
-            'filename' => $file->getClientOriginalName()
-        ]
-    ]);
+---
 
-    return $response->json()['data']['url'];
-}
-```
+### **Opção 4: Cloudinary (Alternativa ao ImgBB)**
 
 ---
 
@@ -156,7 +150,7 @@ private function uploadToImgBB($file)
 - ✅ Deploy ocasional
 
 **Limitações:**
-- ❌ Uploads são perdidos em deploy
+- ❌ Uploads 5ão perdidos em deploy
 - ❌ Uploads são perdidos em restart
 - ❌ Não escala (múltiplos containers)
 
@@ -168,21 +162,22 @@ private function uploadToImgBB($file)
 
 | Solução | Storage | Bandwidth | Complexidade | Recomendado |
 |---------|---------|-----------|--------------|-------------|
-| **Cloudinary** | 25 GB | 25 GB/mês | Média | ⭐⭐⭐⭐⭐ |
+| **ImgBB (atual)** | Ilimitado | Ilimitado | ✅ Implementado | ⭐⭐⭐⭐⭐ |
+| **Cloudinary** | 25 GB | 25 GB/mês | Alta | ⭐⭐⭐⭐ |
 | **AWS S3** | 5 GB | Limitado | Alta | ⭐⭐⭐⭐ |
-| **ImgBB** | Ilimitado | Ilimitado | Baixa | ⭐⭐⭐ |
 | **Local (temp)** | Container | N/A | Nenhuma | ⭐⭐ (apenas testes) |
 
 ## 🎯 Recomendação
 
-### Para Produção:
-**Use Cloudinary** - melhor plano gratuito, CDN incluído, otimização automática.
+### Para Produção (Render):
+**Use ImgBB (já implementado!)** - basta adicionar `IMGBB_API_KEY` nas variáveis de ambiente do Render.  
+Ver [IMGBB_SETUP.md](IMGBB_SETUP.md)
+
+### Se quiser mais recursos:
+**Use Cloudinary** - melhor CDN, otimização automática, transformações de imagem.
 
 ### Para Desenvolvimento/Testes:
 **Use Local (temporário)** - sem configuração adicional, aceite perder uploads.
-
-### Para Projetos Pequenos:
-**Use ImgBB** - setup simples, storage ilimitado.
 
 ---
 

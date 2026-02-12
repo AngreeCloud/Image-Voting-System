@@ -17,14 +17,17 @@ git push origin main
 2. **New +** → **Blueprint**
 3. Conecte seu repositório GitHub
 4. O `render.yaml` será detectado automaticamente
-5. Clique **"Apply"**
+5. **IMPORTANTE:** Adicionar variável de ambiente:
+   - Go to **Web Service** → **Environment**
+   - Add: `IMGBB_API_KEY` = `e029e58eeece17b8d464c9685b19228d`
+6. Clique **"Apply"**
 
 ## Passo 3: Aguardar Deploy
 
 - ⏱️ Primeiro deploy: ~5-10 minutos
 - 📊 Acompanhe em "Logs"
 
-⚠️ **Nota sobre Storage:** O free plan não tem persistent disk. Uploads serão temporários (perdidos em deploys). Ver alternativas em [STORAGE_ALTERNATIVAS.md](STORAGE_ALTERNATIVAS.md)
+✅ **Storage:** Uploads vão para ImgBB (permanente, 25GB grátis). Ver [IMGBB_SETUP.md](IMGBB_SETUP.md)
 
 ## Passo 4: Acessar Aplicação
 

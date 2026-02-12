@@ -32,7 +32,7 @@
     <!-- Detalhes da Imagem -->
     <div class="col-lg-4 mb-4">
         <div class="card sticky-top" style="top: 20px;">
-            <img src="{{ asset($image->path) }}" class="card-img-top" alt="{{ $image->filename }}" style="max-height: 300px; object-fit: cover;">
+            <img src="{{ $image->getImageUrl() }}" class="card-img-top" alt="{{ $image->filename }}" style="max-height: 300px; object-fit: cover;">
             <div class="card-body">
                 <h5 class="card-title">{{ $image->filename }}</h5>
                 <hr>

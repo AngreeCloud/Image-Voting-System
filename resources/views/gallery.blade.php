@@ -17,7 +17,7 @@
         @foreach($images as $image)
             <div class="col-md-4 col-lg-3">
                 <div class="card image-card h-100" data-bs-toggle="modal" data-bs-target="#voteModal" onclick="selectImage({{ $image->id }})">
-                    <img src="{{ asset($image->path) }}" class="card-img-top" alt="{{ $image->filename }}">
+                    <img src="{{ $image->getImageUrl() }}" class="card-img-top" alt="{{ $image->filename }}">
                     <div class="card-body text-center">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="badge bg-primary">
