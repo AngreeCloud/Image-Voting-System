@@ -85,7 +85,16 @@ class ImageController extends Controller
             throw new \Exception('IMGBB_API_KEY não configurada');
         }
 
+        // Log do tamanho do arquivo
+        $fileSize = $file->getSize();
+        \Log::info("Tentando upload ImgBB", [
+            'filename' => $file->getClientOriginalName(),
+            'size_mb' => round($fileSize / 1024 / 1024, 2),
+        ]);
+
         try {
+            $startTime = microtime(true);
+            
             $response = Http::timeout(120) // 2 minutos para arquivos grandes
                 ->retry(2, 1000) // 2 tentativas com 1s de intervalo
                 ->asMultipart()
@@ -101,8 +110,12 @@ class ImageController extends Controller
                     ]
                 ]);
 
+            $duration = round(microtime(true) - $startTime, 2);
+            \Log::info("Upload ImgBB completo em {$duration}s");
+
             if (!$response->successful()) {
                 $errorMsg = $response->json()['error']['message'] ?? $response->body();
+                \Log::error("ImgBB erro", ['response' => $errorMsg]);
                 throw new \Exception('ImgBB recusou: ' . $errorMsg);
             }
 
@@ -115,10 +128,14 @@ class ImageController extends Controller
             return $data['data']['url'];
             
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
-            // Timeout ou problema de conexão
-            throw new \Exception('Timeout ao enviar para ImgBB. Arquivo muito grande ou conexão lenta. Tente arquivo menor.');
+            \Log::error("ImgBB timeout", [
+                'message' => $e->getMessage(),
+                'file_size_mb' => round($fileSize / 1024 / 1024, 2)
+            ]);
+            
+            throw new \Exception('Falha ao enviar para ImgBB. Possíveis causas: arquivo muito grande (' . round($fileSize / 1024 / 1024, 1) . 'MB), conexão lenta ou firewall bloqueando.');
         } catch (\Exception $e) {
-            // Outros erros
+            \Log::error("ImgBB erro geral", ['error' => $e->getMessage()]);
             throw $e;
         }
     }
