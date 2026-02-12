@@ -93,18 +93,37 @@
                                 <i class="fas fa-cog"></i> Gerir Imagens
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.statistics') }}">
-                                <i class="fas fa-chart-bar"></i> Estatísticas
+                        @if(Auth::user()->canViewStatistics())
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.statistics') }}">
+                                    <i class="fas fa-chart-bar"></i> Estatísticas
+                                </a>
+                            </li>
+                        @endif
+                        @if(Auth::user()->isOwner())
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.users.index') }}">
+                                    <i class="fas fa-users-cog"></i> Gerir Admins
+                                </a>
+                            </li>
+                        @endif
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle"></i> {{ Auth::user()->name }}
+                                @if(Auth::user()->isOwner())
+                                    <span class="badge bg-danger ms-1">Owner</span>
+                                @endif
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <form action="{{ route('admin.logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="nav-link btn btn-link">
-                                    <i class="fas fa-sign-out-alt"></i> Sair
-                                </button>
-                            </form>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <form action="{{ route('admin.logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fas fa-sign-out-alt"></i> Sair
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
                         </li>
                     @else
                         <li class="nav-item">

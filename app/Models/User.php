@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'can_view_votes',
+        'can_view_statistics',
     ];
 
     /**
@@ -52,5 +55,37 @@ class User extends Authenticatable
     public function images()
     {
         return $this->hasMany(Image::class);
+    }
+
+    /**
+     * Verificar se o utilizador é owner
+     */
+    public function isOwner(): bool
+    {
+        return $this->role === 'owner';
+    }
+
+    /**
+     * Verificar se o utilizador é admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Verificar se pode ver votos
+     */
+    public function canViewVotes(): bool
+    {
+        return $this->isOwner() || $this->can_view_votes;
+    }
+
+    /**
+     * Verificar se pode ver estatísticas
+     */
+    public function canViewStatistics(): bool
+    {
+        return $this->isOwner() || $this->can_view_statistics;
     }
 }

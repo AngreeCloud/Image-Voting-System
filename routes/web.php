@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\VoteController;
+use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,4 +55,20 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     
     // Estatísticas
     Route::get('/statistics', [ImageController::class, 'statistics'])->name('admin.statistics');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Rotas Owner (Protegidas - apenas owner)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'owner'])->prefix('admin')->group(function () {
+    // Gestão de admins
+    Route::get('/users', [UserManagementController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/create', [UserManagementController::class, 'create'])->name('admin.users.create');
+    Route::post('/users', [UserManagementController::class, 'store'])->name('admin.users.store');
+    Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('admin.users.destroy');
 });

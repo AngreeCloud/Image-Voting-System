@@ -68,6 +68,11 @@ class ImageController extends Controller
      */
     public function viewVotes($id)
     {
+        // Verificar permissão
+        if (!Auth::user()->canViewVotes()) {
+            abort(403, 'Você não tem permissão para visualizar os votos.');
+        }
+
         $image = Image::with(['votes' => function($query) {
             $query->latest();
         }, 'user'])->findOrFail($id);
@@ -104,6 +109,11 @@ class ImageController extends Controller
      */
     public function statistics()
     {
+        // Verificar permissão
+        if (!Auth::user()->canViewStatistics()) {
+            abort(403, 'Você não tem permissão para visualizar as estatísticas.');
+        }
+
         // Carregar todas as imagens com contagem de votos
         $images = Image::withCount('votes')
             ->orderBy('votes_count', 'desc')

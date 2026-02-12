@@ -136,13 +136,23 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <a 
-                                                href="{{ route('admin.images.votes', $image->id) }}" 
-                                                class="btn btn-info btn-sm"
-                                                title="Ver emails dos votantes"
-                                            >
-                                                <i class="fas fa-eye"></i> Ver Votos
-                                            </a>
+                                            @if(Auth::user()->canViewVotes())
+                                                <a 
+                                                    href="{{ route('admin.images.votes', $image->id) }}" 
+                                                    class="btn btn-info btn-sm"
+                                                    title="Ver emails dos votantes"
+                                                >
+                                                    <i class="fas fa-eye"></i> Ver Votos
+                                                </a>
+                                            @else
+                                                <button 
+                                                    class="btn btn-secondary btn-sm" 
+                                                    disabled
+                                                    title="Sem permissão"
+                                                >
+                                                    <i class="fas fa-lock"></i> Sem Acesso
+                                                </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

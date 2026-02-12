@@ -45,10 +45,12 @@
                             </small>
                         </div>
                         
-                        <!-- Ver Votos -->
-                        <a href="{{ route('admin.images.votes', $image->id) }}" class="btn btn-info btn-sm w-100 mb-2">
-                            <i class="fas fa-eye"></i> Ver Votos ({{ $image->votes_count }})
-                        </a>
+                        <!-- Ver Votos (apenas se tiver permissão) -->
+                        @if(Auth::user()->canViewVotes())
+                            <a href="{{ route('admin.images.votes', $image->id) }}" class="btn btn-info btn-sm w-100 mb-2">
+                                <i class="fas fa-eye"></i> Ver Votos ({{ $image->votes_count }})
+                            </a>
+                        @endif
                         
                         <!-- Remover Imagem -->
                         @if($image->user_id === Auth::id())
