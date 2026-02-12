@@ -58,10 +58,19 @@ echo "👤 Verificando owner..."
 php artisan db:seed --class=OwnerSeeder --force || echo "Owner já existe"
 
 # Criar diretório de uploads se não existir
-echo "📁 Configurando diretório de uploads..."
+echo "📁 Configurando diretórios..."
 mkdir -p /var/www/html/public/uploads
 chown -R www-data:www-data /var/www/html/public/uploads
 chmod -R 755 /var/www/html/public/uploads
+
+# Criar e configurar diretórios temporários do NGINX
+mkdir -p /var/lib/nginx/tmp/client_body
+mkdir -p /var/lib/nginx/tmp/proxy
+mkdir -p /var/lib/nginx/tmp/fastcgi
+mkdir -p /var/lib/nginx/tmp/uwsgi
+mkdir -p /var/lib/nginx/tmp/scgi
+chown -R www-data:www-data /var/lib/nginx
+chmod -R 755 /var/lib/nginx/tmp
 
 # Ajustar permissões
 echo "🔐 Ajustando permissões..."

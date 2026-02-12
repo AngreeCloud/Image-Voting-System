@@ -55,9 +55,21 @@ RUN mkdir -p /var/www/html/public/uploads \
     && chown -R www-data:www-data /var/www/html/public/uploads \
     && chmod -R 755 /var/www/html/public/uploads
 
+# Criar diretórios temporários do NGINX com permissões corretas
+RUN mkdir -p /var/lib/nginx/tmp/client_body \
+    && mkdir -p /var/lib/nginx/tmp/proxy \
+    && mkdir -p /var/lib/nginx/tmp/fastcgi \
+    && mkdir -p /var/lib/nginx/tmp/uwsgi \
+    && mkdir -p /var/lib/nginx/tmp/scgi \
+    && chown -R www-data:www-data /var/lib/nginx \
+    && chmod -R 755 /var/lib/nginx/tmp
+
 # Copiar configuração do Nginx
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/default.conf /etc/nginx/http.d/default.conf
+
+# Copiar configuração PHP para uploads
+COPY docker/php-upload.ini $PHP_INI_DIR/conf.d/uploads.ini
 
 # Copiar configuração do Supervisor
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf

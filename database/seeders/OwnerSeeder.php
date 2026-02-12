@@ -13,20 +13,26 @@ class OwnerSeeder extends Seeder
      */
     public function run(): void
     {
-        // Criar utilizador owner
-        User::create([
-            'name' => 'Owner',
-            'email' => 'owner@example.com',
-            'role' => 'owner',
-            'password' => Hash::make('password'), // Password: password
-            'email_verified_at' => now(),
-            'can_view_votes' => true, // Owner tem todas as permissões
-            'can_view_statistics' => true,
-        ]);
+        // Criar utilizador owner (ou pular se já existir)
+        $owner = User::firstOrCreate(
+            ['email' => 'owner@example.com'],
+            [
+                'name' => 'Owner',
+                'role' => 'owner',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+                'can_view_votes' => true,
+                'can_view_statistics' => true,
+            ]
+        );
 
-        $this->command->info('✓ Owner criado com sucesso!');
-        $this->command->info('  Email: owner@example.com');
-        $this->command->info('  Password: password');
-        $this->command->info('  Role: Owner (acesso total)');
+        if ($owner->wasRecentlyCreated) {
+            $this->command->info('✓ Owner criado com sucesso!');
+            $this->command->info('  Email: owner@example.com');
+            $this->command->info('  Password: password');
+            $this->command->info('  Role: Owner (acesso total)');
+        } else {
+            $this->command->info('✓ Owner já existe - pulando...');
+        }
     }
 }
