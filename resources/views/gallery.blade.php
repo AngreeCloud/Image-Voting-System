@@ -2,6 +2,14 @@
 
 @section('title', 'Galeria de Imagens - Vote!')
 
+@section('styles')
+<style>
+    .share-buttons .btn {
+        font-size: 0.8rem;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="row">
     <div class="col-12 text-center mb-4">
@@ -15,6 +23,11 @@
 @if($images->count() > 0)
     <div class="row g-4">
         @foreach($images as $image)
+            @php
+                $imageUrl = $image->getImageUrl();
+                $encodedImageUrl = urlencode($imageUrl);
+                $shareText = urlencode('Vota nesta imagem!');
+            @endphp
             <div class="col-md-4 col-lg-3">
                 <div class="card image-card h-100" data-bs-toggle="modal" data-bs-target="#voteModal" onclick="selectImage({{ $image->id }})">
                     <img src="{{ $image->getImageUrl() }}" class="card-img-top" alt="{{ $image->filename }}">
@@ -26,6 +39,48 @@
                             <small class="text-muted">
                                 <i class="far fa-clock"></i> {{ $image->created_at->diffForHumans() }}
                             </small>
+                        </div>
+
+                        <div class="share-buttons mt-3" onclick="event.stopPropagation();">
+                            <small class="d-block text-muted mb-2">
+                                <i class="fas fa-share-alt"></i> Partilhar
+                            </small>
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                <a
+                                    href="https://wa.me/?text={{ $shareText }}%20{{ $encodedImageUrl }}"
+                                    class="btn btn-sm btn-success"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onclick="event.stopPropagation();"
+                                >
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <a
+                                    href="https://www.facebook.com/sharer/sharer.php?u={{ $encodedImageUrl }}"
+                                    class="btn btn-sm btn-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onclick="event.stopPropagation();"
+                                >
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="copyImageLink(@js($imageUrl), event)"
+                                    title="Copiar link da imagem"
+                                >
+                                    <i class="fas fa-link"></i>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-dark"
+                                    onclick="shareToInstagram(@js($imageUrl), event)"
+                                    title="Copiar link e abrir Instagram"
+                                >
+                                    <i class="fab fa-instagram"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -144,6 +199,45 @@
 <script>
     function selectImage(imageId) {
         document.getElementById('selectedImageId').value = imageId;
+    }
+
+    function copyImageLink(url, event) {
+        if (event) {
+            event.stopPropagation();
+        }
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(url)
+                .then(() => alert('Link da imagem copiado!'))
+                .catch(() => alert('Não foi possível copiar o link.'));
+            return;
+        }
+
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            alert('Link da imagem copiado!');
+        } catch (err) {
+            alert('Não foi possível copiar o link.');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+    function shareToInstagram(url, event) {
+        if (event) {
+            event.stopPropagation();
+        }
+
+        copyImageLink(url);
+        window.open('https://www.instagram.com/', '_blank', 'noopener,noreferrer');
     }
     
     // Se houver pedido para confirmar remoção, mostrar modal
