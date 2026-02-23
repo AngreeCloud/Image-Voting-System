@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Image;
+use App\Services\FacePlusPlusService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -14,7 +15,7 @@ class ImageController extends Controller
     /**
      * Upload de imagem (apenas admin autenticado)
      */
-    public function upload(Request $request)
+    public function upload(Request $request, FacePlusPlusService $facePlusPlusService)
     {
         // Obter configurações (pode vir de um form ou settings)
         $maxSize = $request->input('max_size', 10240); // KB, padrão 10MB
@@ -29,6 +30,7 @@ class ImageController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = $file->getClientOriginalName();
+            $faceDetection = $facePlusPlusService->detectGenderFromImage($file->getRealPath());
             
             // Decidir onde fazer upload baseado no ambiente
             if ($this->shouldUseExternalStorage()) {
@@ -39,6 +41,8 @@ class ImageController extends Controller
                     Image::create([
                         'filename' => $filename,
                         'path' => $imageUrl, // URL completa do ImgBB
+                        'gender' => $faceDetection['gender'],
+                        'has_face' => $faceDetection['has_face'],
                         'user_id' => Auth::id(),
                     ]);
                     
@@ -55,6 +59,8 @@ class ImageController extends Controller
                 Image::create([
                     'filename' => $filename,
                     'path' => 'uploads/' . $uniqueFilename, // Path local
+                    'gender' => $faceDetection['gender'],
+                    'has_face' => $faceDetection['has_face'],
                     'user_id' => Auth::id(),
                 ]);
                 

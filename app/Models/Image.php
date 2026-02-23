@@ -17,7 +17,13 @@ class Image extends Model
     protected $fillable = [
         'filename',
         'path',
+        'gender',
+        'has_face',
         'user_id',
+    ];
+
+    protected $casts = [
+        'has_face' => 'boolean',
     ];
 
     /**
@@ -57,5 +63,22 @@ class Image extends Model
         
         // Caso contrário, é um path local - usar asset()
         return asset($this->path);
+    }
+
+    /**
+     * Label traduzida para o género detetado.
+     */
+    public function getGenderLabelAttribute()
+    {
+        if ($this->has_face === false || $this->gender === null) {
+            return 'Sem rosto detetado';
+        }
+
+        return match (strtolower($this->gender)) {
+            'male' => 'Masculino',
+            'female' => 'Feminino',
+            'unknown' => 'Indeterminado',
+            default => 'Indeterminado',
+        };
     }
 }

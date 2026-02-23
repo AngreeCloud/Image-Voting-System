@@ -39,4 +39,10 @@ return [
         'api_key' => env('IMGBB_API_KEY'),
     ],
 
+    'faceplusplus' => [
+        'endpoint' => env('FACEPP_ENDPOINT', 'https://api-us.faceplusplus.com/facepp/v3/detect'),
+        'api_key' => env('FACEPP_API_KEY'),
+        'api_secret' => env('FACEPP_API_SECRET'),
+    ],
+
 ];

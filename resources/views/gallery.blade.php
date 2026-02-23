@@ -7,6 +7,24 @@
     .share-buttons .btn {
         font-size: 0.8rem;
     }
+
+    .image-card {
+        position: relative;
+    }
+
+    .gender-info-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
 </style>
 @endsection
 
@@ -27,9 +45,24 @@
                 $imageUrl = $image->getImageUrl();
                 $encodedImageUrl = urlencode($imageUrl);
                 $shareText = urlencode('Vota nesta imagem!');
+                $genderLabel = $image->gender_label;
+                $genderTooltip = $genderLabel === 'Sem rosto detetado'
+                    ? 'Sem rosto detetado'
+                    : 'Sexo: ' . $genderLabel;
             @endphp
             <div class="col-md-4 col-lg-3">
                 <div class="card image-card h-100" data-bs-toggle="modal" data-bs-target="#voteModal" onclick="selectImage({{ $image->id }})">
+                    <button
+                        type="button"
+                        class="btn btn-light border gender-info-btn"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="left"
+                        data-bs-title="{{ $genderTooltip }}"
+                        onclick="event.stopPropagation();"
+                        aria-label="Informação de género"
+                    >
+                        ℹ️
+                    </button>
                     <img src="{{ $image->getImageUrl() }}" class="card-img-top" alt="{{ $image->filename }}">
                     <div class="card-body text-center">
                         <div class="d-flex justify-content-between align-items-center">
@@ -200,6 +233,13 @@
     function selectImage(imageId) {
         document.getElementById('selectedImageId').value = imageId;
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipTriggerList.forEach(function (element) {
+            new bootstrap.Tooltip(element);
+        });
+    });
 
     function copyImageLink(url, event) {
         if (event) {
