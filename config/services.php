@@ -43,6 +43,10 @@ return [
         'endpoint' => env('FACEPP_ENDPOINT', 'https://api-us.faceplusplus.com/facepp/v3/detect'),
         'api_key' => env('FACEPP_API_KEY'),
         'api_secret' => env('FACEPP_API_SECRET'),
+        'mask_threshold' => (float) env('FACEPP_MASK_THRESHOLD', 50),
+        'eye_occlusion_threshold' => (float) env('FACEPP_EYE_OCCLUSION_THRESHOLD', 70),
+        'face_quality_min' => (float) env('FACEPP_FACE_QUALITY_MIN', 35),
+        'blur_max' => (float) env('FACEPP_BLUR_MAX', 65),
     ],
 
 ];
