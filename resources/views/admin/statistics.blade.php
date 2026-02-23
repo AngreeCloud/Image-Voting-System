@@ -60,6 +60,40 @@
     </div>
 </div>
 
+<!-- Estatísticas de Género -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center border-primary">
+            <div class="card-body">
+                <i class="fas fa-mars fa-3x text-primary mb-3"></i>
+                <h3 class="fw-bold">{{ number_format($malePercentage, 1) }}%</h3>
+                <p class="text-muted mb-1">Imagens de Homens</p>
+                <small class="text-muted">{{ $maleCount }} imagem(ns)</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center border-danger">
+            <div class="card-body">
+                <i class="fas fa-venus fa-3x text-danger mb-3"></i>
+                <h3 class="fw-bold">{{ number_format($femalePercentage, 1) }}%</h3>
+                <p class="text-muted mb-1">Imagens de Mulheres</p>
+                <small class="text-muted">{{ $femaleCount }} imagem(ns)</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center border-secondary">
+            <div class="card-body">
+                <i class="fas fa-user-slash fa-3x text-secondary mb-3"></i>
+                <h3 class="fw-bold">{{ number_format($noFacePercentage, 1) }}%</h3>
+                <p class="text-muted mb-1">Imagens sem Rosto</p>
+                <small class="text-muted">{{ $noFaceCount }} imagem(ns)</small>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Tabela de Estatísticas -->
 <div class="row">
     <div class="col-12">

@@ -234,10 +234,32 @@ class ImageController extends Controller
         $images = Image::withCount('votes')
             ->orderBy('votes_count', 'desc')
             ->with('user')
-            ->get();
+            ->get()
+            ->filter(function ($image) {
+                return $image->supportsGenderDetection();
+            })
+            ->values();
         
-        $totalVotes = \App\Models\Vote::count();
+        $totalVotes = $images->sum('votes_count');
+        $totalImages = $images->count();
+
+        $maleCount = $images->where('gender', 'male')->count();
+        $femaleCount = $images->where('gender', 'female')->count();
+        $noFaceCount = $images->where('has_face', false)->count();
+
+        $malePercentage = $totalImages > 0 ? round(($maleCount / $totalImages) * 100, 1) : 0;
+        $femalePercentage = $totalImages > 0 ? round(($femaleCount / $totalImages) * 100, 1) : 0;
+        $noFacePercentage = $totalImages > 0 ? round(($noFaceCount / $totalImages) * 100, 1) : 0;
         
-        return view('admin.statistics', compact('images', 'totalVotes'));
+        return view('admin.statistics', compact(
+            'images',
+            'totalVotes',
+            'maleCount',
+            'femaleCount',
+            'noFaceCount',
+            'malePercentage',
+            'femalePercentage',
+            'noFacePercentage'
+        ));
     }
 }
