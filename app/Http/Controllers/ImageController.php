@@ -234,26 +234,27 @@ class ImageController extends Controller
         $images = Image::withCount('votes')
             ->orderBy('votes_count', 'desc')
             ->with('user')
-            ->get()
-            ->filter(function ($image) {
-                return $image->supportsGenderDetection();
-            })
-            ->values();
+            ->get();
         
         $totalVotes = $images->sum('votes_count');
-        $totalImages = $images->count();
+        $genderEligibleImages = $images->filter(function ($image) {
+            return $image->supportsGenderDetection();
+        })->values();
 
-        $maleCount = $images->where('gender', 'male')->count();
-        $femaleCount = $images->where('gender', 'female')->count();
-        $noFaceCount = $images->where('has_face', false)->count();
+        $genderTotalImages = $genderEligibleImages->count();
 
-        $malePercentage = $totalImages > 0 ? round(($maleCount / $totalImages) * 100, 1) : 0;
-        $femalePercentage = $totalImages > 0 ? round(($femaleCount / $totalImages) * 100, 1) : 0;
-        $noFacePercentage = $totalImages > 0 ? round(($noFaceCount / $totalImages) * 100, 1) : 0;
+        $maleCount = $genderEligibleImages->where('gender', 'male')->count();
+        $femaleCount = $genderEligibleImages->where('gender', 'female')->count();
+        $noFaceCount = $genderEligibleImages->where('has_face', false)->count();
+
+        $malePercentage = $genderTotalImages > 0 ? round(($maleCount / $genderTotalImages) * 100, 1) : 0;
+        $femalePercentage = $genderTotalImages > 0 ? round(($femaleCount / $genderTotalImages) * 100, 1) : 0;
+        $noFacePercentage = $genderTotalImages > 0 ? round(($noFaceCount / $genderTotalImages) * 100, 1) : 0;
         
         return view('admin.statistics', compact(
             'images',
             'totalVotes',
+            'genderTotalImages',
             'maleCount',
             'femaleCount',
             'noFaceCount',

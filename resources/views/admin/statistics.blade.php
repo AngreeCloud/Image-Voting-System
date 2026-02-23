@@ -61,6 +61,16 @@
 </div>
 
 <!-- Estatísticas de Género -->
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="alert alert-warning mb-0">
+            <i class="fas fa-info-circle"></i>
+            Para as estatísticas de género, apenas imagens PNG e JPEG (JPG/JPEG) são consideradas.
+            <strong>Total considerado:</strong> {{ $genderTotalImages }} imagem(ns).
+        </div>
+    </div>
+</div>
+
 <div class="row mb-4">
     <div class="col-md-4">
         <div class="card text-center border-primary">
