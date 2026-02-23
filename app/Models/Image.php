@@ -81,4 +81,14 @@ class Image extends Model
             default => 'Indeterminado',
         };
     }
+
+    /**
+     * Determina se o formato da imagem suporta deteção/tooltip de género.
+     */
+    public function supportsGenderDetection(): bool
+    {
+        $extension = strtolower((string) pathinfo($this->filename, PATHINFO_EXTENSION));
+
+        return in_array($extension, ['jpg', 'jpeg', 'png'], true);
+    }
 }

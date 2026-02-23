@@ -30,7 +30,14 @@ class ImageController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = $file->getClientOriginalName();
-            $faceDetection = $facePlusPlusService->detectGenderFromImage($file->getRealPath());
+            $faceDetection = [
+                'gender' => null,
+                'has_face' => null,
+            ];
+
+            if ($this->supportsFaceDetection($file->getClientOriginalExtension())) {
+                $faceDetection = $facePlusPlusService->detectGenderFromImage($file->getRealPath());
+            }
             
             // Decidir onde fazer upload baseado no ambiente
             if ($this->shouldUseExternalStorage()) {
@@ -69,6 +76,16 @@ class ImageController extends Controller
         }
         
         return back()->with('error', 'Erro ao carregar imagem.');
+    }
+
+    /**
+     * Verificar se o formato suporta deteção de género.
+     */
+    private function supportsFaceDetection(?string $extension): bool
+    {
+        $normalizedExtension = strtolower((string) $extension);
+
+        return in_array($normalizedExtension, ['jpg', 'jpeg', 'png'], true);
     }
 
     /**

@@ -49,20 +49,23 @@
                 $genderTooltip = $genderLabel === 'Sem rosto detetado'
                     ? 'Sem rosto detetado'
                     : 'Sexo: ' . $genderLabel;
+                $showGenderInfo = $image->supportsGenderDetection();
             @endphp
             <div class="col-md-4 col-lg-3">
                 <div class="card image-card h-100" data-bs-toggle="modal" data-bs-target="#voteModal" onclick="selectImage({{ $image->id }})">
-                    <button
-                        type="button"
-                        class="btn btn-light border gender-info-btn"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="left"
-                        data-bs-title="{{ $genderTooltip }}"
-                        onclick="event.stopPropagation();"
-                        aria-label="Informação de género"
-                    >
-                        ℹ️
-                    </button>
+                    @if($showGenderInfo)
+                        <button
+                            type="button"
+                            class="btn btn-light border gender-info-btn"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="left"
+                            data-bs-title="{{ $genderTooltip }}"
+                            onclick="event.stopPropagation();"
+                            aria-label="Informação de género"
+                        >
+                            ℹ️
+                        </button>
+                    @endif
                     <img src="{{ $image->getImageUrl() }}" class="card-img-top" alt="{{ $image->filename }}">
                     <div class="card-body text-center">
                         <div class="d-flex justify-content-between align-items-center">
